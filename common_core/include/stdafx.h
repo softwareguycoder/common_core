@@ -16,11 +16,6 @@
 #include <ctype.h>
 #include <time.h>
 
-/**
- * @brief Boolean value data type.
- */
-typedef enum {
-	FALSE, TRUE
-} BOOL;
+#include <../../api_core/api_core/include/api_core.h>
 
 #endif /* __COMMON_CORE_STDAFX_H__ */
