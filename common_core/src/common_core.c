@@ -1,9 +1,4 @@
-/*
- * common_core.c
- *
- *  Created on: Mar 29, 2019
- *      Author: bhart
- */
+// common_core.c - Implementations of commonly-used functions
 
 #include "stdafx.h"
 
@@ -11,16 +6,6 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Internal-use-only functions
-
-///////////////////////////////////////////////////////////////////////////////
-// ThrowArgumentOutOfRangeException function
-
-void ThrowArgumentOutOfRangeException(const char* pszParamName) {
-    if (!IsNullOrWhiteSpace(pszParamName)) {
-        fprintf(stderr, ARGUMENT_OUT_OF_RANGE, pszParamName);
-    }
-    exit(ERROR);
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Contains function - Checks whether one string contains another (case-
@@ -393,9 +378,22 @@ BOOL StartsWith(const char *str, const char *startsWith) {
             FALSE : strncmp(startsWith, str, prefixLength) == 0;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// ThrowArgumentOutOfRangeException function
+
+void ThrowArgumentOutOfRangeException(const char* pszParamName) {
+    if (!IsNullOrWhiteSpace(pszParamName)) {
+        fprintf(stderr, ARGUMENT_OUT_OF_RANGE, pszParamName);
+    }
+    exit(ERROR);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Trim function
+
 // Stores the trimmed input string into the given output buffer,
 // which must be large enough to store the result.  If it is too small,
-// the output is truncated.
+// the output is truncated.  Shout out to Stack Overflow
 void Trim(char *out, size_t len, const char *str) {
     if (len == 0)
         return;

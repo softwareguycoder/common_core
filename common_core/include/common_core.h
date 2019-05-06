@@ -155,6 +155,16 @@ void Split(char* pszStringToSplit, const char* pszDelimiters,
 BOOL StartsWith(const char *str, const char *startsWith);
 
 /**
+ * @name THrowArgumentOutOfRangeException
+ * @brief Prints an error message about the specified parameter not having a
+ * value in the proper range to the console, and then terminates the calling
+ * program.
+ * @param pszParanName String containing the name of the parameter whose value
+ * is not correct.
+ */
+void ThrowArgumentOutOfRangeException(const char* pszParamName);
+
+/**
  * @brief Returns a new string in which all leading and trailing occurrences
  * of a set of specified characters from the current String object are removed.
  * @param out Pointer to a buffer that will receive the trimmed output.
