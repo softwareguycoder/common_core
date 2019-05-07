@@ -54,6 +54,20 @@ void ClearString(char* pszBuffer, int nSize) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Equals function - Are strings equal to each other?
+
+BOOL Equals(const char* pszDest, const char* pszSrc) {
+	return strcmp(pszDest, pszSrc) == 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// EqualsNoCase function - Are strings equal to each other? (case-insensitive)
+
+BOOL EqualsNoCase(const char* pszDest, const char* pszSrc) {
+	return strcasecmp(pszDest, pszSrc) == 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // FormatDate function - Formats the current system date/time into a string.
 //
 

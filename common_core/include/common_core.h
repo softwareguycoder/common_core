@@ -53,6 +53,25 @@ BOOL ContainsNoCase(const char* pszString, const char* pszSubstring);
 void ClearString(char* pszBuffer, int nSize);
 
 /**
+ * @brief Compares two strings to each other to see if they match (case-
+ * sensitive).
+ * @param pszDest One of the strings to compare against.
+ * @param pszSrc The other string to compare.
+ * @returns TRUE if the strings match, as a case-sensitive comparison; FALSE
+ * otherwise.
+ */
+BOOL Equals(const char* pszDest, const char* pszSrc);
+
+/**
+ * @brief Compares two strings to each other to see if they match (case-
+ * insensitive).
+ * @param pszDest One of the strings to compare against.
+ * @param pszSrc The other string to compare.
+ * @returns TRUE if the strings match, as a case-insensitive comparison; FALSE
+ * otherwise.
+ */
+BOOL EqualsNoCase(const char* pszDest, const char* pszSrc);
+/**
  * @brief Formats the current date and time according to the format string.
  * @param pszBuffer Address of the storage where the result is to be placed.
  * @param nSize Length of the buffer, in bytes.
