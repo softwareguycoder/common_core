@@ -15,6 +15,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <wordexp.h>
+#include <sys/stat.h>
 
 #include <../../api_core/api_core/include/api_core.h>
 
