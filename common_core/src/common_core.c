@@ -262,37 +262,6 @@ void PrependTo(char** ppszDest, const char* pszPrefix, const char* pszSrc) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// ShellExpand function
-
-void ShellExpand(char* pszResult, const char* pszInput) {
-	if (IsNullOrWhiteSpace(pszInput)) {
-		return;
-	}
-
-	if (pszResult == NULL) {
-		return;
-	}
-
-	wordexp_t p;
-
-	wordexp(pszInput, &p, 0);
-	char **w = p.we_wordv;
-	if (p.we_wordc <= 0) {
-		wordfree(&p);
-		return;
-	}
-
-	if (IsNullOrWhiteSpace(w[0])) {
-		wordfree(&p);
-		return;
-	}
-
-	strcpy(pszResult, w[0]);
-
-	wordfree(&p);
-}
-
-///////////////////////////////////////////////////////////////////////////////
 // Split function
 
 void Split(char* pszStringToSplit, const char* pszDelimiters,

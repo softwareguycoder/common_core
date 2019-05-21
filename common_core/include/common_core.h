@@ -150,18 +150,6 @@ int MinimumOf(int a, int b);
 void PrependTo(char** ppszDest, const char* pszPrefix, const char* pszSrc);
 
 /**
- * @brief Expands strings a la Bash. Wraps the wordexp function.
- * @param pszResult Address of a buffer into which the result should
- * be stored.  The buffer must have sufficient space for the result.
- * @param pszInput Address of a buffer containing the content to be
- * expanded.
- * @remarks It is sufficient to allocate a buffer of size 255 chars (not
- * including the null-terminator).  This function turns '~/dir' into
- * '/home/user/dir', for example.
- */
-void ShellExpand(char* pszResult, const char* pszInput);
-
-/**
  * @brief Splits a specified string into tokens based on given delimiters.
  * @param pszStringToSplit String to be tokenized.
  * @param pszDelimiters String is split on the delimiters found in this
