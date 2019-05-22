@@ -91,6 +91,17 @@ void FormatDate(char* pszBuffer, int nSize, const char* pszFormat);
 void FreeBuffer(void **ppBuffer);
 
 /**
+ * @brief Executes the shell command and returns an array of the lines of
+ * output returned by it.
+ * @param pszCommand The shell command to execute with Bash.
+ * @param pppszOutputLines Location of storage that receives the address of
+ * an array of strings that contains one element per line of output returned.
+ * @remarks Shout out to user14038 on Stack Overflow for the inspiration.
+ */
+void GetSystemCommandOutput(const char* pszCommand,
+    char*** pppszOutputLines);
+
+/**
  *  @brief Reports the error message specified as well as the error from
  *  the system. Exits the program with the ERROR exit code.
  *  @param pszErrorMessage Additional error text to be echoed to the console.
