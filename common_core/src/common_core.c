@@ -125,14 +125,10 @@ void FreeStringArray(char*** pppszStringArray, int nElementCount) {
       return; /* a count must be a positive integer */
     }
 
-    char** ppszBeginning = *pppszStringArray;
-
     for(int i = 0; i < nElementCount; i++) {
       free((*pppszStringArray)[i]);
       (*pppszStringArray)[i] = NULL;
     }
-
-    *pppszStringArray = ppszBeginning;
 
     free(*pppszStringArray);
     *pppszStringArray = NULL;
@@ -143,6 +139,12 @@ void FreeStringArray(char*** pppszStringArray, int nElementCount) {
 
 void GetSystemCommandOutput(const char* pszCommand,
     char*** pppszOutputLines, int *pnOutputLineCount) {
+
+  FILE *fp = NULL;
+
+  char curline[1035];
+  memset(curline, 0, 1035);
+
   if (pszCommand == NULL
      || pszCommand[0] == '\0') {
     return;
@@ -156,16 +158,12 @@ void GetSystemCommandOutput(const char* pszCommand,
     return;
   }
 
-  char curline[1035];
-  memset(curline, 0, 1035);
-
-  FILE *fp = NULL;
   fp = popen(pszCommand, "r");
 
   if (fp == NULL)
   {
     fprintf(stderr, "Failed to run command\n");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   *pnOutputLineCount = 0; /* number of lines processed */
