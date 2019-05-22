@@ -142,13 +142,17 @@ void FreeStringArray(char*** pppszStringArray, int nElementCount) {
 // GetSystemCommandOutput function
 
 void GetSystemCommandOutput(const char* pszCommand,
-    char*** pppszOutputLines) {
+    char*** pppszOutputLines, int *pnOutputLineCount) {
   if (pszCommand == NULL
      || pszCommand[0] == '\0') {
     return;
   }
 
   if (pppszOutputLines == NULL) {
+    return;
+  }
+
+  if (pnOutputLineCount == NULL) {
     return;
   }
 
@@ -164,24 +168,26 @@ void GetSystemCommandOutput(const char* pszCommand,
     exit(1);
   }
 
-  int nLinesRead = 0; /* number of lines processed */
+  *pnOutputLineCount = 0; /* number of lines processed */
   *pppszOutputLines = NULL;
 
   /* Read the output a line at a time - output it. */
   while (fgets(curline, sizeof(curline) - 1, fp) != NULL)
   {
+    const int ARRAY_SIZE = (*pnOutputLineCount + 1);
+    /* Add another element to the string array of lines */
     *pppszOutputLines = (char**) realloc(*pppszOutputLines,
-        (nLinesRead + 1) * sizeof(char*));
+        ARRAY_SIZE * sizeof(char*));
 
     if (curline == NULL || curline[0] == '\0') {
       /* skip over blank lines */
       continue;
     }
     const int LINE_SIZE = strlen(curline) + 1;
-    (*pppszOutputLines)[nLinesRead] =
+    (*pppszOutputLines)[*pnOutputLineCount] =
         (char*) malloc(LINE_SIZE * sizeof(char));
-    strcpy((*pppszOutputLines)[nLinesRead], curline);
-    nLinesRead++;
+    strcpy((*pppszOutputLines)[*pnOutputLineCount], curline);
+    (*pnOutputLineCount)++;
 
     /* blank out the curline again so that it can receive
      * new data */

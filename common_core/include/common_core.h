@@ -108,10 +108,12 @@ void FreeStringArray(char*** pppszStringArray, int nElementCount);
  * @param pszCommand The shell command to execute with Bash.
  * @param pppszOutputLines Location of storage that receives the address of
  * an array of strings that contains one element per line of output returned.
+ * @param pnOutputLineCount Address of an integer variable that receives the
+ * count of lines returned.  Required.
  * @remarks Shout out to user14038 on Stack Overflow for the inspiration.
  */
 void GetSystemCommandOutput(const char* pszCommand,
-    char*** pppszOutputLines);
+    char*** pppszOutputLines, int *pnOutputLineCount);
 
 /**
  *  @brief Reports the error message specified as well as the error from
