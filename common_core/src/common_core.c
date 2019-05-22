@@ -145,8 +145,7 @@ void GetSystemCommandOutput(const char* pszCommand,
   char curline[1035];
   memset(curline, 0, 1035);
 
-  if (pszCommand == NULL
-     || pszCommand[0] == '\0') {
+  if (IsNullOrWhiteSpace(pszCommand)) {
     return;
   }
 
@@ -158,6 +157,9 @@ void GetSystemCommandOutput(const char* pszCommand,
     return;
   }
 
+  *pnOutputLineCount = 0; /* number of lines processed */
+  *pppszOutputLines = NULL;
+
   fp = popen(pszCommand, "r");
 
   if (fp == NULL)
@@ -165,9 +167,6 @@ void GetSystemCommandOutput(const char* pszCommand,
     fprintf(stderr, "Failed to run command\n");
     exit(EXIT_FAILURE);
   }
-
-  *pnOutputLineCount = 0; /* number of lines processed */
-  *pppszOutputLines = NULL;
 
   /* Read the output a line at a time - output it. */
   while (fgets(curline, sizeof(curline) - 1, fp) != NULL)
