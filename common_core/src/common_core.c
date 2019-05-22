@@ -112,6 +112,9 @@ void FreeBuffer(void **ppBuffer) {
   *ppBuffer = NULL;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// GetSystemCommandOutput function
+
 void GetSystemCommandOutput(const char* pszCommand,
     char*** pppszOutputLines) {
   if (pszCommand == NULL
