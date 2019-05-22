@@ -113,6 +113,32 @@ void FreeBuffer(void **ppBuffer) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// FreeStringArray function
+
+void FreeStringArray(char*** pppszStringArray, int nElementCount) {
+    if (pppszStringArray == NULL
+        || *pppszStringArray == NULL) {
+        return;
+    }
+
+    if (nElementCount <= 0) {
+      return; /* a count must be a positive integer */
+    }
+
+    char** ppszBeginning = *pppszStringArray;
+
+    for(int i = 0; i < nElementCount; i++) {
+      free((*pppszStringArray)[i]);
+      (*pppszStringArray)[i] = NULL;
+    }
+
+    *pppszStringArray = ppszBeginning;
+
+    free(*pppszStringArray);
+    *pppszStringArray = NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // GetSystemCommandOutput function
 
 void GetSystemCommandOutput(const char* pszCommand,

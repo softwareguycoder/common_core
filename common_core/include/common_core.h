@@ -91,6 +91,18 @@ void FormatDate(char* pszBuffer, int nSize, const char* pszFormat);
 void FreeBuffer(void **ppBuffer);
 
 /**
+ * @brief Frees the string array located at the address specified.
+ * @param pppszStringArray Address of a char** array of strings, each
+ * element of which has been previously allocated with malloc.
+ * @param nElementCount Count of elements that are present in the string
+ * array.  Must be a number greater than zero.
+ * @remarks Iterates through the provided string array and frees each element.
+ * Then the entire block of memory containing the string array is freed,
+ * and the pppszStringArray pointer's value is set to NULL.
+ */
+void FreeStringArray(char*** pppszStringArray, int nElementCount);
+
+/**
  * @brief Executes the shell command and returns an array of the lines of
  * output returned by it.
  * @param pszCommand The shell command to execute with Bash.
