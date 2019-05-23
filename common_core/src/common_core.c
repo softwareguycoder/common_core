@@ -362,7 +362,7 @@ void Split(char* pszStringToSplit, const char* pszDelimiters,
     return;
   }
 
-  if (IsNullOrWhiteSpace(pszDelimiters)) {
+  if (pszDelimiters == NULL || pszDelimiters[0] == '\0') {
     return;
   }
 
