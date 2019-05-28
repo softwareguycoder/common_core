@@ -116,22 +116,52 @@ void FreeBuffer(void **ppBuffer) {
 // FreeStringArray function
 
 void FreeStringArray(char*** pppszStringArray, int nElementCount) {
-    if (pppszStringArray == NULL
-        || *pppszStringArray == NULL) {
-        return;
-    }
+  if (pppszStringArray == NULL
+      || *pppszStringArray == NULL) {
+    return;
+  }
 
-    if (nElementCount <= 0) {
-      return; /* a count must be a positive integer */
-    }
+  if (nElementCount <= 0) {
+    return; /* a count must be a positive integer */
+  }
 
-    for(int i = 0; i < nElementCount; i++) {
-      free((*pppszStringArray)[i]);
-      (*pppszStringArray)[i] = NULL;
-    }
+  for (int i = 0; i < nElementCount; i++) {
+    free((*pppszStringArray)[i]);
+    (*pppszStringArray)[i] = NULL;
+  }
 
-    free(*pppszStringArray);
-    *pppszStringArray = NULL;
+  free(*pppszStringArray);
+  *pppszStringArray = NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// GetOccurrenceCount function
+
+int GetOccurrenceCount(const char* pszSrc,
+  const char* pszFindWhat) {
+  int nResult = 0;
+  if (pszSrc == NULL || pszSrc[0] == '\0') {
+    // NOTE: do not use IsNullOrWhiteSpace here to check pszSrc
+    return nResult; // Required parameter
+  }
+
+  if (pszFindWhat == NULL || pszFindWhat[0] == '\0') {
+    // NOTE: do not use IsNullOrWhiteSpace here to check pszFindWhat
+    return nResult; // Required parameter
+  }
+
+  const int FIND_WHAT_LEN = strlen(pszFindWhat);
+
+  for (int i = 0; i < strlen(pszSrc)
+    && pszSrc[i] != '\0'; i++) {
+    if (strstr(&pszSrc[i], pszFindWhat) != &pszSrc[i]) {
+      continue;
+    }
+    nResult++;
+    i += FIND_WHAT_LEN;
+  }
+
+  return nResult;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -347,6 +377,66 @@ void PrependTo(char** ppszDest, const char* pszPrefix, const char* pszSrc) {
   // Place the address of the first character of the result
   // into the location pointed to by ppszDest
   *ppszDest = pszResult;
+}
+
+void StringReplace(const char* pszSrc,
+    const char* pszFindWhat, const char* pszReplaceWith,
+    char** ppszResult) {
+  if (pszSrc == NULL || pszSrc[0] == '\0') {  // do not use IsNullOrWhiteSpace
+    return; // Required parameter
+  }
+
+  if (pszFindWhat == NULL || pszFindWhat[0] == '\0') {
+    return; // Required parameter
+  }
+
+  if (ppszResult == NULL) {
+    return; // Required parameter
+  }
+
+  int nSrcLen = strlen(pszSrc);
+  int nFindWhatLen = strlen(pszFindWhat);
+  int nReplaceWithLen = strlen(pszReplaceWith);
+  const int DELTA = nReplaceWithLen - nFindWhatLen;
+
+  /* In order to determine the proper size for the result
+     buffer, count the occurrences of findWhat in pszSrc.
+     But, there is no need to bother if the DELTA is zero,
+     since this means the src and dest strings will be of
+     identical length. In this case, set nOccurrences to a
+     default value of zero. */
+  int nOccurrences = DELTA == 0
+    ? 0
+    : GetOccurrenceCount(pszSrc, pszFindWhat);
+  if (nOccurrences < 0) {
+    return; // unknown error
+  }
+
+  /* Determine the appropriate size for the block of memory
+   * in which to store the result. */
+  const int BUFSIZE = DELTA == 0
+    ? nSrcLen
+    : nSrcLen + nOccurrences * DELTA;
+
+  *ppszResult = (char*) malloc((BUFSIZE + 1)*sizeof(char));
+  memset(*ppszResult, 0, BUFSIZE + 1);
+
+  int i = 0;
+  while (*pszSrc) {
+    // compare the substring with the result
+    if (strstr(pszSrc, pszFindWhat) == pszSrc) {
+      strcpy(&((*ppszResult)[i]), pszReplaceWith);
+      i += nReplaceWithLen;
+      pszSrc += nFindWhatLen;
+      //*ppszResult += nReplaceWithLen;
+    } else {
+      (*ppszResult)[i] = *pszSrc;
+      pszSrc++;
+      i++;
+    }
+  }
+
+  (*ppszResult)[i] = '\0';
 }
 
 ///////////////////////////////////////////////////////////////////////////////

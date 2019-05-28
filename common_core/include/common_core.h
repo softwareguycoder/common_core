@@ -103,6 +103,15 @@ void FreeBuffer(void **ppBuffer);
 void FreeStringArray(char*** pppszStringArray, int nElementCount);
 
 /**
+ * @name GetOccurrenceCount
+ * @brief Determines the number of times a substring appears in a string.
+ * @param pszSrc String to examine.
+ * @param pszFindWhat Substring to check for.
+ * @return Number of occurrences of pszFindWhat in pszSrc.
+ */
+int GetOccurrenceCount(const char* pszSrc, const char* pszFindWhat);
+
+/**
  * @brief Executes the shell command and returns an array of the lines of
  * output returned by it.
  * @param pszCommand The shell command to execute with Bash.
@@ -199,6 +208,24 @@ void Split(char* pszStringToSplit, const char* pszDelimiters,
  * @returns TRUE if the string in str begins with the string in startsWith.
  */
 BOOL StartsWith(const char *str, const char *startsWith);
+
+/**
+ * @name StringReplace
+ * @brief Replaces all occurrences of a substring with another string in a
+ * given larger character string.
+ * @param pszSrc Address of the character string in which to do
+ * the replacement.
+ * @param pszFindWhat Substring to locate and replace occurrences of.
+ * @param pszReplaceWith Address of a sequence of characters to replace the
+ * substring identiied by pszFindWhat with.
+ * @param ppszResult Address of a pointer to be filled with the location of
+ * the resultant string.
+ * @remarks This function gives up if passed a blank string for either of
+ * pszSrc or pszFindWhat. In such case, the value of the pointer referred
+ * to by ppszResult will remain unchanged. */
+void StringReplace(const char* pszSrc,
+    const char* pszFindWhat, const char* pszReplaceWith,
+    char** ppszResult);
 
 /**
  * @name THrowArgumentOutOfRangeException
