@@ -103,13 +103,13 @@ void FreeBuffer(void **ppBuffer);
 void FreeStringArray(char*** pppszStringArray, int nElementCount);
 
 /**
- * @name GetOccurrenceCount
+ * @name GetSubstringOccurrenceCount
  * @brief Determines the number of times a substring appears in a string.
  * @param pszSrc String to examine.
  * @param pszFindWhat Substring to check for.
  * @return Number of occurrences of pszFindWhat in pszSrc.
  */
-int GetOccurrenceCount(const char* pszSrc, const char* pszFindWhat);
+int GetSubstringOccurrenceCount(const char* pszSrc, const char* pszFindWhat);
 
 /**
  * @brief Executes the shell command and returns an array of the lines of

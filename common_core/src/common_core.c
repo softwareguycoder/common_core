@@ -137,7 +137,7 @@ void FreeStringArray(char*** pppszStringArray, int nElementCount) {
 ///////////////////////////////////////////////////////////////////////////////
 // GetOccurrenceCount function
 
-int GetOccurrenceCount(const char* pszSrc,
+int GetSubstringOccurrenceCount(const char* pszSrc,
   const char* pszFindWhat) {
   int nResult = 0;
   if (pszSrc == NULL || pszSrc[0] == '\0') {
@@ -407,7 +407,7 @@ void StringReplace(const char* pszSrc,
      default value of zero. */
   int nOccurrences = DELTA == 0
     ? 0
-    : GetOccurrenceCount(pszSrc, pszFindWhat);
+    : GetSubstringOccurrenceCount(pszSrc, pszFindWhat);
   if (nOccurrences < 0) {
     return; // unknown error
   }
