@@ -8,6 +8,9 @@
 // Internal-use-only functions
 
 ///////////////////////////////////////////////////////////////////////////////
+// Publicly-exposed functions
+
+///////////////////////////////////////////////////////////////////////////////
 // Contains function - Checks whether one string contains another (case-
 // sensitive).
 //
@@ -39,6 +42,9 @@ BOOL ContainsNoCase(const char* pszString, const char* pszSubstring) {
 
   return strcasestr(pszString, pszSubstring) != NULL;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// ClearString function
 
 void ClearString(char* pszBuffer, int nSize) {
   if (IsNullOrWhiteSpace(pszBuffer)) {
@@ -135,10 +141,10 @@ void FreeStringArray(char*** pppszStringArray, int nElementCount) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// GetOccurrenceCount function
+// GetSubstringOccurrenceCount function
 
 int GetSubstringOccurrenceCount(const char* pszSrc,
-  const char* pszFindWhat) {
+    const char* pszFindWhat) {
   int nResult = 0;
   if (pszSrc == NULL || pszSrc[0] == '\0') {
     // NOTE: do not use IsNullOrWhiteSpace here to check pszSrc
@@ -153,7 +159,7 @@ int GetSubstringOccurrenceCount(const char* pszSrc,
   const int FIND_WHAT_LEN = strlen(pszFindWhat);
 
   for (int i = 0; i < strlen(pszSrc)
-    && pszSrc[i] != '\0'; i++) {
+      && pszSrc[i] != '\0'; i++) {
     if (strstr(&pszSrc[i], pszFindWhat) != &pszSrc[i]) {
       continue;
     }
@@ -268,6 +274,9 @@ BOOL IsAlphaNumeric(const char* pszTest) {
   return TRUE;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// IsNullOrWhiteSpace function
+
 BOOL IsNullOrWhiteSpace(const char* pszTest) {
   if (pszTest == NULL || strlen(pszTest) == 0) {
     return TRUE;
@@ -281,6 +290,9 @@ BOOL IsNullOrWhiteSpace(const char* pszTest) {
 
   return FALSE;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// IsNumeric function
 
 BOOL IsNumeric(const char* pszTest) {
   if (IsNullOrWhiteSpace(pszTest)) {
@@ -299,6 +311,9 @@ BOOL IsNumeric(const char* pszTest) {
 
   return TRUE;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// IsUppercase function
 
 BOOL IsUppercase(const char* pszTest) {
   if (IsNullOrWhiteSpace(pszTest)) {
@@ -332,12 +347,18 @@ BOOL IsUppercase(const char* pszTest) {
   return TRUE;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// MinimumOf function
+
 int MinimumOf(int a, int b) {
   if (a <= b)
     return a;
 
   return b;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// PrependTo function
 
 void PrependTo(char** ppszDest, const char* pszPrefix, const char* pszSrc) {
   // Double-check that we have valid pointers and non-blank
@@ -377,66 +398,6 @@ void PrependTo(char** ppszDest, const char* pszPrefix, const char* pszSrc) {
   // Place the address of the first character of the result
   // into the location pointed to by ppszDest
   *ppszDest = pszResult;
-}
-
-void StringReplace(const char* pszSrc,
-    const char* pszFindWhat, const char* pszReplaceWith,
-    char** ppszResult) {
-  if (pszSrc == NULL || pszSrc[0] == '\0') {  // do not use IsNullOrWhiteSpace
-    return; // Required parameter
-  }
-
-  if (pszFindWhat == NULL || pszFindWhat[0] == '\0') {
-    return; // Required parameter
-  }
-
-  if (ppszResult == NULL) {
-    return; // Required parameter
-  }
-
-  int nSrcLen = strlen(pszSrc);
-  int nFindWhatLen = strlen(pszFindWhat);
-  int nReplaceWithLen = strlen(pszReplaceWith);
-  const int DELTA = nReplaceWithLen - nFindWhatLen;
-
-  /* In order to determine the proper size for the result
-     buffer, count the occurrences of findWhat in pszSrc.
-     But, there is no need to bother if the DELTA is zero,
-     since this means the src and dest strings will be of
-     identical length. In this case, set nOccurrences to a
-     default value of zero. */
-  int nOccurrences = DELTA == 0
-    ? 0
-    : GetSubstringOccurrenceCount(pszSrc, pszFindWhat);
-  if (nOccurrences < 0) {
-    return; // unknown error
-  }
-
-  /* Determine the appropriate size for the block of memory
-   * in which to store the result. */
-  const int BUFSIZE = DELTA == 0
-    ? nSrcLen
-    : nSrcLen + nOccurrences * DELTA;
-
-  *ppszResult = (char*) malloc((BUFSIZE + 1)*sizeof(char));
-  memset(*ppszResult, 0, BUFSIZE + 1);
-
-  int i = 0;
-  while (*pszSrc) {
-    // compare the substring with the result
-    if (strstr(pszSrc, pszFindWhat) == pszSrc) {
-      strcpy(&((*ppszResult)[i]), pszReplaceWith);
-      i += nReplaceWithLen;
-      pszSrc += nFindWhatLen;
-      //*ppszResult += nReplaceWithLen;
-    } else {
-      (*ppszResult)[i] = *pszSrc;
-      pszSrc++;
-      i++;
-    }
-  }
-
-  (*ppszResult)[i] = '\0';
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -570,6 +531,71 @@ BOOL StartsWith(const char *str, const char *startsWith) {
   stringLength < prefixLength ?
                                 FALSE :
                                 strncmp(startsWith, str, prefixLength) == 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// StringReplace function
+
+void StringReplace(const char* pszSrc,
+    const char* pszFindWhat, const char* pszReplaceWith,
+    char** ppszResult) {
+  if (pszSrc == NULL || pszSrc[0] == '\0') {  // do not use IsNullOrWhiteSpace
+    return; // Required parameter
+  }
+
+  if (pszFindWhat == NULL || pszFindWhat[0] == '\0') {
+    return; // Required parameter
+  }
+
+  if (ppszResult == NULL) {
+    return; // Required parameter
+  }
+
+  int nSrcLen = strlen(pszSrc);
+  int nFindWhatLen = strlen(pszFindWhat);
+  int nReplaceWithLen = strlen(pszReplaceWith);
+  const int DELTA = nReplaceWithLen - nFindWhatLen;
+
+  /* In order to determine the proper size for the result
+   buffer, count the occurrences of findWhat in pszSrc.
+   But, there is no need to bother if the DELTA is zero,
+   since this means the src and dest strings will be of
+   identical length. In this case, set nOccurrences to a
+   default value of zero. */
+  int nOccurrences = DELTA == 0
+      ? 0
+        :
+        GetSubstringOccurrenceCount(pszSrc, pszFindWhat);
+  if (nOccurrences < 0) {
+    return; // unknown error
+  }
+
+  /* Determine the appropriate size for the block of memory
+   * in which to store the result. */
+  const int BUFSIZE = DELTA == 0
+      ? nSrcLen
+        :
+        nSrcLen + nOccurrences * DELTA;
+
+  *ppszResult = (char*) malloc((BUFSIZE + 1) * sizeof(char));
+  memset(*ppszResult, 0, BUFSIZE + 1);
+
+  int i = 0;
+  while (*pszSrc) {
+    // compare the substring with the result
+    if (strstr(pszSrc, pszFindWhat) == pszSrc) {
+      strcpy(&((*ppszResult)[i]), pszReplaceWith);
+      i += nReplaceWithLen;
+      pszSrc += nFindWhatLen;
+      //*ppszResult += nReplaceWithLen;
+    } else {
+      (*ppszResult)[i] = *pszSrc;
+      pszSrc++;
+      i++;
+    }
+  }
+
+  (*ppszResult)[i] = '\0';
 }
 
 ///////////////////////////////////////////////////////////////////////////////
