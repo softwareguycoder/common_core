@@ -7,11 +7,6 @@
 
 #include "stdafx.h"
 
-#ifndef ARGUMENT_OUT_OF_RANGE
-#define ARGUMENT_OUT_OF_RANGE \
-    "The argument '%s' is outside of the range of valid values.\n"
-#endif //ARGUMENT_OUT_OF_RANGE
-
 /**
  * @brief Symbol indicating the value to be returned on successful execution.
  */
@@ -227,15 +222,6 @@ void StringReplace(const char* pszSrc,
     const char* pszFindWhat, const char* pszReplaceWith,
     char** ppszResult);
 
-/**
- * @name THrowArgumentOutOfRangeException
- * @brief Prints an error message about the specified parameter not having a
- * value in the proper range to the console, and then terminates the calling
- * program.
- * @param pszParanName String containing the name of the parameter whose value
- * is not correct.
- */
-void ThrowArgumentOutOfRangeException(const char* pszParamName);
 
 /**
  * @brief Returns a new string in which all leading and trailing occurrences

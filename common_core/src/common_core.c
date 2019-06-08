@@ -1,7 +1,6 @@
 // common_core.c - Implementations of commonly-used functions
 
 #include "stdafx.h"
-
 #include "common_core.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -596,16 +595,6 @@ void StringReplace(const char* pszSrc,
   }
 
   (*ppszResult)[i] = '\0';
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// ThrowArgumentOutOfRangeException function
-
-void ThrowArgumentOutOfRangeException(const char* pszParamName) {
-  if (!IsNullOrWhiteSpace(pszParamName)) {
-    fprintf(stderr, ARGUMENT_OUT_OF_RANGE, pszParamName);
-  }
-  exit(ERROR);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -21,5 +21,6 @@
 #include <limits.h>
 
 #include <../../api_core/api_core/include/api_core.h>
+#include <../../exceptions_core/exceptions_core/include/exceptions_core.h>
 
 #endif /* __COMMON_CORE_STDAFX_H__ */
