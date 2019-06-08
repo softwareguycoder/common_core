@@ -156,6 +156,11 @@ BOOL IsNumeric(const char* pszTest);
  * @returns TRUE if the string represents a numeric value; FALSE otherwise.
  */
 BOOL IsUppercase(const char* pszTest);
+
+void JoinStrings(char* ppszSourceStringArray[],
+  int nSourceStringArrayLength, char** ppszOutput,
+  int *pnOutputLength);
+
 /**
  * @brief Tells which of the two integer values passed is the smaller of the two.
  * @param a The first integer value to be checked.

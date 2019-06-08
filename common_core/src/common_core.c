@@ -131,6 +131,9 @@ void FreeStringArray(char*** pppszStringArray, int nElementCount) {
   }
 
   for (int i = 0; i < nElementCount; i++) {
+    if (IsNullOrWhiteSpace((*pppszStringArray)[i])) {
+      continue;
+    }
     free((*pppszStringArray)[i]);
     (*pppszStringArray)[i] = NULL;
   }
@@ -344,6 +347,47 @@ BOOL IsUppercase(const char* pszTest) {
   pszTrimResult = NULL;
 
   return TRUE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// JoinStrings function
+
+void JoinStrings(char* ppszSourceStringArray[],
+  int nSourceStringArrayLength, char** ppszOutput,
+  int *pnOutputLength) {
+    if (ppszSourceStringArray == NULL) {
+        return;
+    }
+
+    if (nSourceStringArrayLength <= 0) {
+      return;
+    }
+
+    if (ppszOutput == NULL) {
+      return;
+    }
+
+    if (pnOutputLength == NULL) {
+      return;
+    }
+
+    int nTotalBytes = 0;
+    for(int i = 0;i < nSourceStringArrayLength;i++) {
+      const int CURRENT_ENTRY_SIZE
+        = strlen(ppszSourceStringArray[i]) + 1;
+      nTotalBytes += CURRENT_ENTRY_SIZE;
+      *ppszOutput = (char*)realloc(*ppszOutput,
+        (nTotalBytes)*sizeof(char));
+      if (i == 0) {
+        memset(*ppszOutput, 0, nTotalBytes);
+      }
+      strcat(*ppszOutput, ppszSourceStringArray[i]);
+    }
+    const int FINISHED_STRING_SIZE = strlen(*ppszOutput) + 1;
+    *ppszOutput = (char*)realloc(*ppszOutput,
+      (FINISHED_STRING_SIZE)*sizeof(char));
+    (*ppszOutput)[FINISHED_STRING_SIZE - 1] = '\0';
+    *pnOutputLength = FINISHED_STRING_SIZE;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
