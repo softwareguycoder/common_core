@@ -175,13 +175,15 @@ int GetSubstringOccurrenceCount(const char* pszSrc,
 ///////////////////////////////////////////////////////////////////////////////
 // GetSystemCommandOutput function
 
+#define SYSTEM_COMMAND_OUTPUT_LINE_LENGTH 80
+
 void GetSystemCommandOutput(const char* pszCommand,
     char*** pppszOutputLines, int *pnOutputLineCount) {
 
   FILE *fp = NULL;
 
-  char curline[1035];
-  memset(curline, 0, 1035);
+  char curline[SYSTEM_COMMAND_OUTPUT_LINE_LENGTH];
+  memset(curline, 0, SYSTEM_COMMAND_OUTPUT_LINE_LENGTH);
 
   if (IsNullOrWhiteSpace(pszCommand)) {
     return;
@@ -202,31 +204,32 @@ void GetSystemCommandOutput(const char* pszCommand,
 
   if (fp == NULL)
   {
-    fprintf(stderr, "Failed to run command\n");
+    fprintf(stderr, "ERROR: Failed to run command\n");
     exit(EXIT_FAILURE);
   }
 
   /* Read the output a line at a time - output it. */
-  while (fgets(curline, sizeof(curline) - 1, fp) != NULL)
+  while (fgets(curline, SYSTEM_COMMAND_OUTPUT_LINE_LENGTH, fp) != NULL)
   {
+    if (IsNullOrWhiteSpace(curline)) {
+      /* skip over blank lines */
+      continue;
+    }
+
     const int ARRAY_SIZE = (*pnOutputLineCount + 1);
     /* Add another element to the string array of lines */
     *pppszOutputLines = (char**) realloc(*pppszOutputLines,
         ARRAY_SIZE * sizeof(char*));
-
-    if (curline == NULL || curline[0] == '\0') {
-      /* skip over blank lines */
-      continue;
-    }
     const int LINE_SIZE = strlen(curline) + 1;
     (*pppszOutputLines)[*pnOutputLineCount] =
         (char*) malloc(LINE_SIZE * sizeof(char));
+
     strcpy((*pppszOutputLines)[*pnOutputLineCount], curline);
     (*pnOutputLineCount)++;
 
     /* blank out the curline again so that it can receive
      * new data */
-    memset(curline, 0, 1035);
+    memset(curline, 0, SYSTEM_COMMAND_OUTPUT_LINE_LENGTH);
   }
 
   pclose(fp);
@@ -353,41 +356,41 @@ BOOL IsUppercase(const char* pszTest) {
 // JoinStrings function
 
 void JoinStrings(char* ppszSourceStringArray[],
-  int nSourceStringArrayLength, char** ppszOutput,
-  int *pnOutputLength) {
-    if (ppszSourceStringArray == NULL) {
-        return;
-    }
+    int nSourceStringArrayLength, char** ppszOutput,
+    int *pnOutputLength) {
+  if (ppszSourceStringArray == NULL) {
+    return;
+  }
 
-    if (nSourceStringArrayLength <= 0) {
-      return;
-    }
+  if (nSourceStringArrayLength <= 0) {
+    return;
+  }
 
-    if (ppszOutput == NULL) {
-      return;
-    }
+  if (ppszOutput == NULL) {
+    return;
+  }
 
-    if (pnOutputLength == NULL) {
-      return;
-    }
+  if (pnOutputLength == NULL) {
+    return;
+  }
 
-    int nTotalBytes = 0;
-    for(int i = 0;i < nSourceStringArrayLength;i++) {
-      const int CURRENT_ENTRY_SIZE
-        = strlen(ppszSourceStringArray[i]) + 1;
-      nTotalBytes += CURRENT_ENTRY_SIZE;
-      *ppszOutput = (char*)realloc(*ppszOutput,
-        (nTotalBytes)*sizeof(char));
-      if (i == 0) {
-        memset(*ppszOutput, 0, nTotalBytes);
-      }
-      strcat(*ppszOutput, ppszSourceStringArray[i]);
+  int nTotalBytes = 0;
+  for (int i = 0; i < nSourceStringArrayLength; i++) {
+    const int CURRENT_ENTRY_SIZE
+    = strlen(ppszSourceStringArray[i]) + 1;
+    nTotalBytes += CURRENT_ENTRY_SIZE;
+    *ppszOutput = (char*) realloc(*ppszOutput,
+        (nTotalBytes) * sizeof(char));
+    if (i == 0) {
+      memset(*ppszOutput, 0, nTotalBytes);
     }
-    const int FINISHED_STRING_SIZE = strlen(*ppszOutput) + 1;
-    *ppszOutput = (char*)realloc(*ppszOutput,
-      (FINISHED_STRING_SIZE)*sizeof(char));
-    (*ppszOutput)[FINISHED_STRING_SIZE - 1] = '\0';
-    *pnOutputLength = FINISHED_STRING_SIZE;
+    strcat(*ppszOutput, ppszSourceStringArray[i]);
+  }
+  const int FINISHED_STRING_SIZE = strlen(*ppszOutput) + 1;
+  *ppszOutput = (char*) realloc(*ppszOutput,
+      (FINISHED_STRING_SIZE) * sizeof(char));
+  (*ppszOutput)[FINISHED_STRING_SIZE - 1] = '\0';
+  *pnOutputLength = FINISHED_STRING_SIZE;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
