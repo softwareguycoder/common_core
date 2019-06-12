@@ -18,7 +18,7 @@
  * @brief Symbol idnicating the value to be returned if an error occurs.
  */
 #ifndef ERROR
-#define ERROR		-1
+#define ERROR -1
 #endif
 
 /**
