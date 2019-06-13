@@ -321,8 +321,36 @@ BOOL IsNumeric(const char* pszTest) {
 // IsOneOf function
 
 BOOL IsOneOf(char chTest, const char* pszPossibilities, int nPossibilities) {
-  // TODO: Add implementation code here
-  return FALSE;
+  BOOL bResult = FALSE;
+
+  if (chTest == '\0')
+    return bResult;
+
+  if (IsNullOrWhiteSpace(pszPossibilities)) {
+    return bResult;
+  }
+
+  if (nPossibilities != strlen(pszPossibilities) + 1) {
+    /* In this case, either we are passed non-string binary data, or
+     * someone is trying to mess with us.  Either way, we only take strings
+     * and nPossibilities needs to be equal to strlen(pszPossibilities) + 1.
+     */
+    ThrowArgumentOutOfRangeException("nPosssibilities");
+  }
+
+  if (nPossibilities <= 0) {
+    // This variable is a count, so it can only be positive
+    return bResult;
+  }
+
+  for (int i = 0; i < nPossibilities; i++) {
+    bResult = chTest == pszPossibilities[i];
+    if (bResult) {
+      break;
+    }
+  }
+
+  return bResult;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -339,9 +367,9 @@ BOOL IsUppercase(const char* pszTest) {
 
   Trim(pszTrimResult, TEST_SIZE, pszTest);
 
-  // The string pszTest is alphanumeric if and only if
-  // every character is either a letter or a number.
-  // Anything else anywhere else in the string, and too bad.
+// The string pszTest is alphanumeric if and only if
+// every character is either a letter or a number.
+// Anything else anywhere else in the string, and too bad.
   for (int i = 0; i < TEST_SIZE; i++) {
     if (pszTrimResult[i] == '\0') {
       continue;
@@ -415,42 +443,42 @@ int MinimumOf(int a, int b) {
 // PrependTo function
 
 void PrependTo(char** ppszDest, const char* pszPrefix, const char* pszSrc) {
-  // Double-check that we have valid pointers and non-blank
-  // prefix and source strings in the input
+// Double-check that we have valid pointers and non-blank
+// prefix and source strings in the input
   if (ppszDest == NULL) {
     return;
   }
 
-  // The prefix is required and must not be blank
+// The prefix is required and must not be blank
   if (pszPrefix == NULL || pszPrefix[0] == '\0') {
     return;
   }
 
-  // The source string is required and must not be blank
+// The source string is required and must not be blank
   if (pszSrc == NULL || pszSrc[0] == '\0') {
     return;
   }
 
-  // Figure out the total length of the two strings
-  // (prefix and source) and add one more for the
-  // null-terminator
+// Figure out the total length of the two strings
+// (prefix and source) and add one more for the
+// null-terminator
   const int TOTAL_SIZE = strlen(pszPrefix) + strlen(pszSrc) + 1;
 
-  // Allocate a block of memory that is TOTAL_SIZE characters
-  // in length to prepare for gluing the prefix and source
-  // strings together
+// Allocate a block of memory that is TOTAL_SIZE characters
+// in length to prepare for gluing the prefix and source
+// strings together
   char* pszResult = (char*) malloc(TOTAL_SIZE * sizeof(char));
   if (pszResult == NULL) {
     return;			// Failed to allocate memory
   }
 
-  // Copy the prefix into the buffer pointed to by pszResult
-  // and then glue the source on the end of that.
+// Copy the prefix into the buffer pointed to by pszResult
+// and then glue the source on the end of that.
   strcpy(pszResult, pszPrefix);
   strcat(pszResult, pszSrc);
 
-  // Place the address of the first character of the result
-  // into the location pointed to by ppszDest
+// Place the address of the first character of the result
+// into the location pointed to by ppszDest
   *ppszDest = pszResult;
 }
 
