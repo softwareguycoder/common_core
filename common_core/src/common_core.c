@@ -318,6 +318,14 @@ BOOL IsNumeric(const char* pszTest) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// IsOneOf function
+
+BOOL IsOneOf(char chTest, const char* pszPossibilities, int nPossibilities) {
+  // TODO: Add implementation code here
+  return FALSE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // IsUppercase function
 
 BOOL IsUppercase(const char* pszTest) {
