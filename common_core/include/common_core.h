@@ -142,6 +142,20 @@ BOOL IsAlphaNumeric(const char* test);
 BOOL IsNullOrWhiteSpace(const char* pszTest);
 
 /**
+ * @name IsOneOf
+ * @brief Checks whether the char, ch, is one of the values contained
+ * in the array pszPossibilities.
+ * @param chTest Character to check.
+ * @param pszPossibilities Array of characters that are possible values for
+ * the character chTest.
+ * @param nPossibilities Number of bytes in the possibilities array, including
+ * the terminating null character, if any.
+ * @return TRUE if the character chTest is one of the values in
+ * pszPossibilities, FALSE otherwise.
+ */
+BOOL IsOneOf(char chTest, const char* pszPossibilities, int nPossibilities);
+
+/**
  * @brief Returns a value indicating whether the string specified represents a
  * numeric value.
  * @param pszTest Pointer to the string to check.
