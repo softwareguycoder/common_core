@@ -7,6 +7,16 @@
 
 #include "stdafx.h"
 
+#ifndef ERROR_FAILED_ALLOC_ARRAY
+#define ERROR_FAILED_ALLOC_ARRAY \
+  "ERROR: Failed to allocate memory for more array elements.\n"
+#endif //ERROR_FAILED_ALLOC_ARRAY
+
+#ifndef ERROR_FAILED_ALLOC_STRING_BUFFER
+#define ERROR_FAILED_ALLOC_STRING_BUFFER \
+  "ERROR: Failed to allocate string buffer memory.\n"
+#endif //ERROR_FAILED_ALLOC_STRING_BUFFER
+
 /**
  * @brief Symbol indicating the value to be returned on successful execution.
  */
@@ -200,6 +210,8 @@ void PrependTo(char** ppszDest, const char* pszPrefix, const char* pszSrc);
 /**
  * @brief Splits a specified string into tokens based on given delimiters.
  * @param pszStringToSplit String to be tokenized.
+ * @param nStringToSplitSize The size, in bytes, of the buffer holding the
+ * string to be tokenized.  Must be a positive integer.
  * @param pszDelimiters String is split on the delimiters found in this
  * string.
  * @param pppszStrings Memory location to be filled with the address of an
@@ -212,8 +224,8 @@ void PrependTo(char** ppszDest, const char* pszPrefix, const char* pszSrc);
  * if this is the case for either one of them or both, the Split function
  * does nothing.
  */
-void Split(char* pszStringToSplit, const char* pszDelimiters,
-  char*** pppszStrings, int* pnResultCount);
+void Split(char* pszStringToSplit, int nStringToSplitSize,
+    const char* pszDelimiters, char*** pppszStrings, int* pnResultCount);
 
 /**
  * @brief Checks to see whether one string begins with another.

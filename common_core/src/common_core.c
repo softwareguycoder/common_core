@@ -131,15 +131,13 @@ void FreeStringArray(char*** pppszStringArray, int nElementCount) {
   }
 
   for (int i = 0; i < nElementCount; i++) {
-    if (IsNullOrWhiteSpace((*pppszStringArray)[i])) {
+    if ((*pppszStringArray)[i] == NULL) {
       continue;
     }
-    free((*pppszStringArray)[i]);
-    (*pppszStringArray)[i] = NULL;
+    FreeBuffer((void**) &(*pppszStringArray)[i]);
   }
 
-  free(*pppszStringArray);
-  *pppszStringArray = NULL;
+  FreeBuffer((void**) pppszStringArray);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -170,75 +168,6 @@ int GetSubstringOccurrenceCount(const char* pszSrc,
   }
 
   return nResult;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// GetSystemCommandOutput function
-
-#define SYSTEM_COMMAND_OUTPUT_LINE_LENGTH 80
-
-void GetSystemCommandOutput(const char* pszCommand,
-    char*** pppszOutputLines, int *pnOutputLineCount) {
-
-  FILE *fp = NULL;
-
-  char curline[SYSTEM_COMMAND_OUTPUT_LINE_LENGTH];
-  memset(curline, 0, SYSTEM_COMMAND_OUTPUT_LINE_LENGTH);
-
-  if (IsNullOrWhiteSpace(pszCommand)) {
-    return;
-  }
-
-  if (pppszOutputLines == NULL) {
-    return;
-  }
-
-  if (pnOutputLineCount == NULL) {
-    return;
-  }
-
-  *pnOutputLineCount = 0; /* number of lines processed */
-  *pppszOutputLines = NULL;
-
-  fp = popen(pszCommand, "r");
-
-  if (fp == NULL)
-  {
-    fprintf(stderr, "ERROR: Failed to run command\n");
-    exit(EXIT_FAILURE);
-  }
-
-  /* Read the output a line at a time - output it. */
-  while (fgets(curline, SYSTEM_COMMAND_OUTPUT_LINE_LENGTH, fp) != NULL)
-  {
-    if (IsNullOrWhiteSpace(curline)) {
-      /* skip over blank lines */
-      continue;
-    }
-
-    const int ARRAY_SIZE = (*pnOutputLineCount + 1);
-    /* Add another element to the string array of lines */
-    *pppszOutputLines = (char**) realloc(*pppszOutputLines,
-        ARRAY_SIZE * sizeof(char*));
-    const int LINE_SIZE = strlen(curline) + 1;
-    (*pppszOutputLines)[*pnOutputLineCount] =
-        (char*) malloc(LINE_SIZE * sizeof(char));
-
-    strcpy((*pppszOutputLines)[*pnOutputLineCount], curline);
-    (*pnOutputLineCount)++;
-
-    /* blank out the curline again so that it can receive
-     * new data */
-    memset(curline, 0, SYSTEM_COMMAND_OUTPUT_LINE_LENGTH);
-  }
-
-  pclose(fp);
-  fp = NULL;
-
-  /* Now, pppszOutputLines contains the address of an array of strings
-   * that contains the lines outputted by the system command.  A free() call
-   * should be done on the array pointed to by pppszOutputLines before
-   * the program exits. */
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -485,13 +414,17 @@ void PrependTo(char** ppszDest, const char* pszPrefix, const char* pszSrc) {
 ///////////////////////////////////////////////////////////////////////////////
 // Split function
 
-void Split(char* pszStringToSplit, const char* pszDelimiters,
-    char*** pppszStrings, int* pnResultCount) {
+void Split(char* pszStringToSplit, int nStringToSplitSize,
+    const char* pszDelimiters, char*** pppszStrings, int* pnResultCount) {
   if (IsNullOrWhiteSpace(pszStringToSplit)) {
     return;
   }
 
   if (pppszStrings == NULL) {
+    return;
+  }
+
+  if (nStringToSplitSize <= 0) {
     return;
   }
 
@@ -502,6 +435,12 @@ void Split(char* pszStringToSplit, const char* pszDelimiters,
   if (pnResultCount == NULL) {
     return;
   }
+
+  const int STRING_TO_SPLIT_SIZE = nStringToSplitSize + 1;
+
+  char szTrimmedStringToSplit[STRING_TO_SPLIT_SIZE];
+  memset(szTrimmedStringToSplit, 0, STRING_TO_SPLIT_SIZE);
+  Trim(szTrimmedStringToSplit, STRING_TO_SPLIT_SIZE, pszStringToSplit);
 
   /* This function tokenizes the string pszStringToSplit on the
    character(s) in pszDelimiters using strtok() over and over
@@ -520,7 +459,7 @@ void Split(char* pszStringToSplit, const char* pszDelimiters,
 
   /* Attempt to extract the first token from the string
    ( a token is defined as the "stuff between the delimiters" ) */
-  char *pszCurrentResult = strtok(pszStringToSplit, pszDelimiters);
+  char *pszCurrentResult = strtok(szTrimmedStringToSplit, pszDelimiters);
   if (pszCurrentResult == NULL) {
     return; /* nothing came of splitting the string */
   }
@@ -535,6 +474,10 @@ void Split(char* pszStringToSplit, const char* pszDelimiters,
    into and initialize it to all zeroes (a best practice).*/
   char* pszFirstElement = (char*) malloc(
       FIRST_RESULT_SIZE * sizeof(char));
+  if (pszFirstElement == NULL) {
+    fprintf(stderr, ERROR_FAILED_ALLOC_STRING_BUFFER);
+    exit(EXIT_FAILURE);
+  }
   memset(pszFirstElement, 0,
       FIRST_RESULT_SIZE * sizeof(char));
 
@@ -546,6 +489,10 @@ void Split(char* pszStringToSplit, const char* pszDelimiters,
    currently needing to be just one element in size (since
    as of right now, we just have one thing to put into it) */
   char** ppszResultArray = (char**) malloc(1 * sizeof(char*));
+  if (ppszResultArray == NULL) {
+    fprintf(stderr, ERROR_FAILED_ALLOC_ARRAY);
+    exit(EXIT_FAILURE);
+  }
   memset(ppszResultArray, 0, 1 * sizeof(char*));
 
   /* Initialize the first element of the array of strings
@@ -572,6 +519,11 @@ void Split(char* pszStringToSplit, const char* pszDelimiters,
     int CURRENT_RESULT_SIZE = strlen(pszCurrentResult) + 1;
     char* pszNextResult = (char*) malloc(
         CURRENT_RESULT_SIZE * sizeof(char));
+    if (pszNextResult == NULL) {
+      fprintf(stderr, ERROR_FAILED_ALLOC_ARRAY);
+      exit(EXIT_FAILURE);
+    }
+
     memset(pszNextResult, 0,
         CURRENT_RESULT_SIZE * sizeof(char));
 
